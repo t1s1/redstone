@@ -1,0 +1,44 @@
+@import "base";
+
+.course-menu { 
+  position: absolute;
+  top: $titleHeight;
+  left: 0;
+  width: $menuWidth;
+  z-index:  2;
+
+  .menu-item {
+    display: block;
+    border: {
+      style: solid;
+      width: 0 0 1px;
+      color: lighten($baseColor, 10%);
+    }
+    /* each item in menu */
+    a {
+      color: $linkColor;
+      text-decoration: none;
+      display: block;
+      margin: 0;
+      padding: 6px 12px;
+      
+      background: darken($baseColor, 30%);
+
+      border: {
+        style: solid;
+        width: 0 10px 0 0;
+        color: lighten($baseColor, 6%);
+      }
+
+      &.selected {
+        color: darken($linkColor, 10%);
+        background: darken($baseColor, 35%);
+        border-color: $highlight;
+      }
+      &:hover, &.selected:hover {
+        background: darken($baseColor, 20%);
+        border-color: scale-color($highlight, $saturation: 100%, $lightness: 20%);
+      }
+    }
+  }
+}

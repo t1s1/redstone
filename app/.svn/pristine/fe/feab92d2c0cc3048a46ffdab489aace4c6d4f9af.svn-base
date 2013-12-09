@@ -1,0 +1,17 @@
+@import "compass_twitter_bootstrap";
+
+
+
+$blue: #3bbfce;
+$margin: 16px;
+
+
+.course-menu {
+  @extend .nav;
+}
+
+.border {
+  padding: $margin / 2;
+  margin: $margin / 2;
+  border: 2px $blue solid;
+}

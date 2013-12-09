@@ -1,0 +1,191 @@
+.content {
+  position: absolute;
+  top: 40px;
+  left: 220px;
+  width: 740px;
+  height: 600px;
+  z-index: 4;
+  padding: 20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #c1c3c5;
+  font-size: 16px;
+}
+
+.content h1,
+.content h2 {
+  font-size: 1.4em;
+  color: #b1181e;
+}
+
+.content-animate.ng-enter,
+.content-animate.ng-leave {
+  -webkit-transition: 300ms linear all;
+  -ms-transition: 300ms linear all;
+  transition: 300ms linear all;
+}
+
+.content-animate.ng-enter {
+  opacity: 0;
+}
+
+.content-animate.ng-enter-active {
+  opacity: 1;
+}
+
+.content-animate.ng-leave {
+  opacity: 1;
+}
+
+.content-animate.ng-leave-active {
+  opacity: 0;
+}
+
+.linear-nav {
+  position: absolute;
+  top: 680px;
+  left: 220px;
+  width: 780px;
+  height: 36px;
+  z-index: 1;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #c1c3c5;
+  background: #c1c3c5;
+  color: #5a5c60;
+  font-size: 2.2em;
+}
+
+.linear-nav button {
+  display: block;
+  position: absolute;
+  top: 2px;
+  width: 80px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  border: 0;
+  background: rgba(255,255,255,.5);
+  color: #5a5c60;
+}
+
+.linear-nav button#back {
+  left: 2px;
+}
+
+.linear-nav button#next {
+  right: 2px;
+  color: #b1181e;
+}
+
+.linear-nav button:disabled,
+.linear-nav button#next:disabled {
+  color: #a7a9ac;
+}
+
+@media -sass-debug-info {
+  filename {
+    font-family: file\:\/\/C\:\/inetpub\/wwwroot\/redstone\/app\/redstone\/main\.scss;
+  }
+
+  line {
+    font-family: \000034;
+  }
+}
+
+body {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+@media -sass-debug-info {
+  filename {
+    font-family: file\:\/\/C\:\/inetpub\/wwwroot\/redstone\/app\/redstone\/main\.scss;
+  }
+
+  line {
+    font-family: \000038;
+  }
+}
+
+.container {
+  position: relative;
+  margin: 60px auto;
+  width: 1000px;
+  height: 680px;
+}
+
+.course-menu {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 220px;
+  z-index: 2;
+}
+
+.course-menu .menu-item {
+  display: block;
+  border-style: solid;
+  border-width: 0 0 1px;
+  border-color: #c1c3c5;
+}
+
+.course-menu .menu-item a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  margin: 0;
+  padding: 6px 12px;
+  background: #5a5c60;
+  border-style: solid;
+  border-width: 0 10px 0 0;
+  border-color: #b7b8bb;
+}
+
+.course-menu .menu-item a.selected {
+  color: #e6e6e6;
+  background: #4e5053;
+  border-color: #b1181e;
+}
+
+.course-menu .menu-item a:hover,
+.course-menu .menu-item a.selected:hover {
+  background: #73767a;
+  border-color: #ff0811;
+}
+
+@media -sass-debug-info {
+  filename {
+    font-family: file\:\/\/C\:\/inetpub\/wwwroot\/redstone\/app\/redstone\/screenTitle\/screenTitle\.scss;
+  }
+
+  line {
+    font-family: \000033;
+  }
+}
+
+.screen-title {
+  display: block;
+  position: absolute;
+  top: 10px;
+  right: 0;
+  height: 0;
+  z-index: 3;
+  padding: 0;
+  text-align: right;
+  color: #00accd;
+  font-size: 1.5em;
+}
+
+.course-title {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 220px;
+  height: 0;
+  z-index: 3;
+  padding: 0;
+  text-align: left;
+  color: #5a5c60;
+  font-size: 2.2em;
+}

@@ -1,0 +1,11 @@
+/*
+ * All Directives files to be loaded should be listed here
+ */
+define([
+  './content',
+  './title',
+  './menuRecursive',
+  './menuTree',
+  './menu',
+  './linearNav'
+  ], function () {});

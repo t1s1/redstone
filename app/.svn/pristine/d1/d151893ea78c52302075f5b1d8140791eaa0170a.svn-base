@@ -1,0 +1,498 @@
+'use strict';
+
+// APPLICATION
+angular.module('cwwRedstone', ['cwwRedstone.directives', 'cwwRedstone.services', 'ngAnimate']);
+
+// SERVICES
+var services = angular.module('cwwRedstone.services', ['ngResource', 'LocalStorageModule']);
+
+/*
+ * CourseOutlineJSON
+ * Returns reference to course outline resource, in JSON format
+ */
+services.factory('CourseOutlineJSON', ['$resource', function($resource) {
+  return $resource('./content/courseOutline.json');
+}]);
+
+/*
+ * CourseOutlineLoader
+ * Loads course outline asynchronously
+ */
+services.factory('CourseOutlineLoader', ['CourseOutlineJSON', '$q', function(CourseOutlineJSON, $q) {
+  return function() {
+    var delay = $q.defer();
+    CourseOutlineJSON.get(function(CourseOutlineJSON) {
+      delay.resolve(CourseOutlineJSON);
+    }, function() {
+      delay.reject('Unable to fetch course outline');
+    });
+    return delay.promise;
+  };
+}]);
+
+/*
+ * CourseOutline
+ * Gets course outline, stores and manipulates result
+ */
+services.service('CourseOutline', ['CourseOutlineLoader', function(CourseOutlineLoader) {
+  var courseOutline;
+  // set this to determine the deepest level to be shown
+  var maxDepth = 1;
+
+  function iterateOutline(outlineContentLevel, levelNum) {
+    var content = outlineContentLevel.content;
+
+    for (var i = 0; i <= content.length - 1; i++) {
+      if(content[i].content !== undefined) {
+        iterateOutline(content[i], levelNum+1);
+      }
+      // store level of this node
+      content[i].level = levelNum;
+      // local reference
+      content[i].maxDepth = maxDepth;
+      // "selected" shows which is currently active
+      content[i].selected = false;
+      // store reference to parent
+      content[i].parent = outlineContentLevel;
+      // store index for linear navigation
+      content[i].index = i;
+    }
+    levelNum--;
+  }
+
+  return {
+    getOutline: function() {
+      return new CourseOutlineLoader().then(function(outline) {
+        iterateOutline(outline, 0);
+        courseOutline = outline;
+        return courseOutline;
+      });
+    }
+  };
+}]);
+
+/*
+ * Comm
+ * Communicates with server, or local storage if unavailable
+ */
+services.service('Comm', ['localStorageService', 'SCORM_12', function(localStorageService, SCORM_12) {
+
+  var LMSAvailable = SCORM_12.doLMSInitialize();
+
+  function setLocation(screenId) {
+    if(LMSAvailable) {
+      SCORM_12.doLMSSetValue('cmi.core.lesson_location', screenId);
+      SCORM_12.doLMSCommit();
+    }
+    else {
+      saveData('loc', screenId);
+    }
+  }
+
+  function getLocation() {
+    var loc;
+    if(LMSAvailable) {
+      loc = SCORM_12.doLMSGetValue('cmi.core.lesson_location');
+    }
+    else {
+      loc = retrieveData('loc');
+    }
+    return loc;
+  }
+
+  function saveData(key, value) {
+    if(localStorageService.isSupported) {
+      localStorageService.add(key, value);
+    }
+    // use cookies
+    else {
+      localStorageService.cookie.add(key, value);
+    }
+  }
+
+  function retrieveData(key) {
+    var value;
+    if(localStorageService.isSupported) {
+      value = localStorageService.get(key);
+    }
+    // use cookies
+    else {
+      value = localStorageService.cookie.get(key);
+    }
+    return value;
+  }
+
+
+
+  return {
+    setSessionData: function(data) {
+      for (var prop in data) {
+        saveData(prop, data[prop]);
+      }
+    },
+    setLocation: function(screenId) {
+      setLocation(screenId);
+    },
+    getLocation: function() {
+      return getLocation();
+    },
+    getSessionData: function(key) {
+      return retrieveData(key);
+    },
+    saveLocationAndClose: function(screenId) {
+      setLocation(screenId);
+      SCORM_12.DoLMSFinish();
+    }
+  };
+}]);
+
+/*
+ * StateManager
+ * Handles state of navigation/progress
+ */
+services.service('StateManager', ['CourseOutline', 'Comm', '$rootScope', '$location', '$window', function(CourseOutline, Comm, $rootScope, $location, $window) {
+  var courseOutline;
+  // stores visibly selected menu item
+  var selectedNode;
+  // stores current node (could be sub of selected)
+  var currentNode;
+
+  // handles user closing the window
+  $window.addEventListener('unload', function() {
+    Comm.saveLocationAndClose(currentNode.id);
+  });
+
+  // highlight selected item and set current
+  function setSelection(newNode) {
+    // recursively check parents until we find one that can show selection
+    function setSelectedOnParent(thisNode) {
+      if (thisNode.level < thisNode.maxDepth) {
+        selectedNode = thisNode;
+      }
+      else if (thisNode.parent) {
+        setSelectedOnParent(thisNode.parent);
+      }
+    }
+
+    // if this node is not currently selected
+    if(currentNode !== newNode) {
+      currentNode = newNode;
+      // clear old selection flag
+      if(selectedNode) {
+        selectedNode.selected = false;
+      }
+
+      // if this is a level that can show
+      if(currentNode.level < currentNode.maxDepth) {
+        selectedNode = currentNode;
+      }
+      else {
+        setSelectedOnParent(currentNode);
+      }
+    }
+
+    // set flag
+    selectedNode.selected = true;
+
+    // set page location
+    $location.path('/'+currentNode.id);
+    // store location
+    Comm.setLocation(currentNode.id);
+
+    return courseOutline;
+  }
+
+  function findNodeById(screenId) {
+    var node = {};
+    var found = false;
+
+    // search recursively
+    function searchOutline(outlineContentLevel, levelNum) {
+      var content = outlineContentLevel.content;
+
+      if (!found) {
+        for (var i = 0; i <= content.length - 1; i++) {
+          //need to drop one more level?
+          if(content[i].content !== undefined) {
+            searchOutline(content[i], levelNum+1);
+          }
+          if (content[i].id === screenId) {
+            node = content[i];
+            found = true;
+          }
+        }
+        levelNum--;
+      }
+    }
+
+    searchOutline(courseOutline, 0);
+
+    return node;
+
+  }
+
+  return {
+    init: function() {
+      // we need to make sure the course outline is loaded AND arranged
+      return CourseOutline.getOutline().then(function(outline) {
+        courseOutline = outline;
+
+        var storedLocation = Comm.getLocation();
+        var initialNode;
+
+        // initialize to first page
+        if(storedLocation) {
+          initialNode = findNodeById(storedLocation);
+        }
+        else {
+          initialNode = courseOutline.content[0];
+        }
+        return setSelection(initialNode);
+      });
+    },
+    setCurrent: function(node) {
+      setSelection(node);
+    },
+    getCurrent: function() {
+      return currentNode;
+    },
+    getSelected: function() {
+      return selectedNode;
+    }
+  };
+}]);
+
+// DIRECTIVES
+var directives = angular.module('cwwRedstone.directives', []);
+
+/*
+ * cwwContent
+ * Handles loading of course content
+ */
+directives.directive('cwwContent', function() {
+  return {
+    controller: ['$scope', '$location', function($scope, $location) {
+      //$scope.screenId = null;
+
+      // watch when value of location changes and change content to match
+      $scope.$watch(function pathWatch() {
+        return $location.path();
+      },
+      function pathWatchAction(path) {
+        if(path !== undefined && path !== '') {
+          $scope.screenId = path;
+        }
+        
+      });
+    }],
+    templateUrl:'./views/content.html'
+  };
+});
+
+/*
+ * cwwLinearNav
+ * Handles Back/Next navigation
+ */
+directives.directive('cwwLinearNav', function() {
+  return {
+    controller: ['$scope', '$location', 'StateManager', function($scope, $location, StateManager) {
+      //var c = CourseOutline;
+      var thisNode;
+
+      // looks for next node, recursively searching up the tree
+      function findNext(node, thisNode) {
+        if(node.parent === undefined) {
+          return thisNode;
+        }
+        // if there is a parent node, and we're the last node
+        if(node.parent.content[node.index +1] === undefined) {
+          thisNode = findNext(node.parent, thisNode);
+        }
+        else {
+          thisNode = node;
+        }
+        return thisNode;
+      }
+
+      // checks to see if this is the very last node in the course
+      function isLastCheck(node) {
+        var isLast;
+        if(node.parent === undefined) {
+          // if we've made it to the very top, we're done and there are no more nodes after this
+          isLast = true;
+        }
+        else {
+          // if there is a parent node, and we're the last node
+          if(node.parent.content[node.index +1] === undefined) {
+            // we must recurse up
+            isLast = isLastCheck(node.parent);
+          }
+          else {
+            // not the last node
+            isLast = false;
+          }
+        }
+        return isLast;
+      }
+
+      // searches for the the last node of the deepest branch (useful when moving back)
+      function findLastOfDeepest(node, thisNode) {
+        // if there is content...
+        if(node.content !== undefined) {
+          // recurse into the last node
+          thisNode = findLastOfDeepest(node.content[node.content.length-1], thisNode);
+        }
+        else {
+          thisNode = node;
+        }
+        return thisNode;
+      }
+
+      $scope.NextDisabled = function() {
+        var disabled = false;
+
+        // initialize to where we are
+        thisNode = StateManager.getCurrent();
+        // if we get something
+        if(thisNode !== undefined) {
+          // if there is content, then Next should be enabled
+          if(thisNode.content !== undefined) {
+            disabled = false;
+          }
+          else {
+            // if not, see if this is this the last one?
+            disabled = isLastCheck(thisNode);
+          }
+        }
+        return disabled;
+      };
+
+      $scope.BackDisabled = function() {
+        var disabled = false;
+
+        // initialize to where we are
+        thisNode = StateManager.getCurrent();
+        // if we get something
+        if(thisNode !== undefined) {
+          // if this is the first node
+          if(thisNode.index === 0) {
+            // and we're at the top level
+            if(thisNode.parent.id === undefined) {
+              disabled = true;
+            }
+          }
+        }
+
+        return disabled;
+      };
+
+      $scope.Next = function() {
+        // initialize to where we are
+        thisNode = StateManager.getCurrent();
+
+        // if there are children to this node, we want to go to the first one of them
+        if(thisNode.content !== undefined) {
+          StateManager.setCurrent(thisNode.content[0]);
+        }
+        // we are the children
+        else {
+          // is this the last one? if so, check parents until we get a node that isn't
+          thisNode = findNext(thisNode, thisNode);
+          StateManager.setCurrent(thisNode.parent.content[thisNode.index+1]);
+        }
+      };
+
+      $scope.Back = function() {
+        // initialize to where we are
+        thisNode = StateManager.getCurrent();
+        // if this is first node
+        if(thisNode.index === 0) {
+          // we want the parent node (intro)
+          if(thisNode.parent !== undefined) {
+            thisNode = thisNode.parent;
+          }
+          // uh-oh, we're at the top level, so drop to last child of previous branch
+          else {
+            thisNode = findLastOfDeepest(thisNode[thisNode.index-1], thisNode);
+          }
+        }
+        // not the first, just go back one
+        else {
+          thisNode = findLastOfDeepest(thisNode.parent.content[thisNode.index-1], thisNode);
+        }
+        StateManager.setCurrent(thisNode);
+      };
+
+    }],
+    templateUrl:'./views/linearNav.html'
+  };
+});
+
+
+/*
+ * cwwTitle
+ * Displays course title
+ */
+directives.directive('cwwTitle', function() {
+  return {
+    controller: ['$scope', 'CourseOutline', function($scope, CourseOutline) {
+      CourseOutline.getOutline().then(function(outline) {
+        $scope.title = outline.title;
+      });
+    }],
+    templateUrl:'./views/courseTitle.html'
+  };
+});
+
+/*
+ * cwwMenu
+ * Navigation menu for course
+ */
+directives.directive('cwwMenu', function() {
+  return {
+    controller: ['$scope', 'StateManager', function($scope, StateManager) {
+      StateManager.init().then(function(outline) {
+        $scope.CourseOutline = outline;
+      });
+    }],
+    templateUrl:'./views/menu.html'
+  };
+});
+
+/*
+ * cwwRecursive
+ * Used in navigation menu tree
+ */
+directives.directive('cwwRecursive', function($compile) {
+  return {
+    restrict: 'EACM',
+    priority: 100000,
+    compile: function(tElement) {
+      var contents = tElement.contents().remove();
+      var compiledContents;
+      return function(scope, iElement) {
+        if(!compiledContents) {
+          compiledContents = $compile(contents);
+        }
+        iElement.append(compiledContents(scope, function(clone) { return clone; }));
+      };
+    }
+  };
+});
+
+/*
+ * cwwTree
+ * Handles display of individual items in navigation menu
+ */
+directives.directive('cwwTree', function() {
+  return {
+    controller: ['$scope', 'StateManager', function($scope, StateManager) {
+      $scope.setSelection = StateManager.setCurrent;
+    }],
+    scope: {'thisNode': '=cwwTree'},
+    templateUrl: './views/menuTree.html'
+  };
+});
+
+
+

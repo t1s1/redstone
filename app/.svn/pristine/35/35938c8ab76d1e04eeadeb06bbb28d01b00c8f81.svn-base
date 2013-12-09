@@ -1,0 +1,26 @@
+/*
+ * Angular framework components loaded and referenced here
+ * This is where RequireJS loads and defines the Angular app
+ * Should not need to be edited, unless new Angular resources have been added
+ */
+define([
+  'angular',
+  'angularAnimate', 
+  'angularLocalStorage', 
+  'angularCookies', 
+  'angularResource',
+  './directives/index',
+  './services/index'
+], 
+function (ng) {
+  'use strict';
+  // returns reference to main app by name, and all the injected dependencies
+  return ng.module('redstoneApp', [
+    'ngAnimate',
+    'LocalStorageModule',
+    'ngCookies',
+    'ngResource',
+    'redstoneApp.services',
+    'redstoneApp.directives'
+  ]);
+});

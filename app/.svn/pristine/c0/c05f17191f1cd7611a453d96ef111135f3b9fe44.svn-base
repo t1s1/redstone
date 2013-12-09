@@ -1,0 +1,3 @@
+<!-- Menu element, uses menuTree to recursively build structure -->
+<div cww-tree="CourseOutline" class="course-menu"></div>
+

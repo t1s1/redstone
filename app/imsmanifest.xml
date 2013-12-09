@@ -1,0 +1,234 @@
+<?xml version="1.0" standalone="no" ?>
+<!-- created with "Manifest Maker for ADL SCORM 1.2 Version 2.0.0" for Dreamweaver,
+ on Fri Jul 12 2013 14:43:22 GMT-0400 (Eastern Daylight Time) -->
+
+<manifest identifier="redstone_preview-MANIFEST" version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                        http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                        http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd" >
+
+<metadata>
+<schema>ADL SCORM</schema>
+<schemaversion>1.2</schemaversion>
+<adlcp:location>imsmetadata.xml</adlcp:location>
+</metadata>
+ 
+<organizations default="TOC1">
+<organization identifier="TOC1">
+<title>redstone preview</title >
+<item identifier="I_SCO0" identifierref="SCO0">
+<title>undefined</title>
+</item>
+</organization>
+</organizations>
+
+<resources>
+<resource identifier="SCO0" type="webcontent" adlcp:scormtype="sco" href="index.html">
+<file href="index.html" />
+<dependency identifierref="ALLRESOURCES" />
+</resource>
+
+<resource identifier="ALLRESOURCES" type="webcontent" adlcp:scormtype="asset">
+<file href=".buildignore" />
+<file href="components/angular-cookies/README.md" />
+<file href="components/angular-cookies/angular-cookies.js" />
+<file href="components/angular-cookies/angular-cookies.min.js" />
+<file href="components/angular-cookies/bower.json" />
+<file href="components/angular-local-storage/README.md" />
+<file href="components/angular-local-storage/angular-local-storage.js" />
+<file href="components/angular-local-storage/bower.json" />
+<file href="components/angular-mocks/README.md" />
+<file href="components/angular-mocks/angular-mocks.js" />
+<file href="components/angular-mocks/bower.json" />
+<file href="components/angular-resource/README.md" />
+<file href="components/angular-resource/angular-resource.js" />
+<file href="components/angular-resource/angular-resource.min.js" />
+<file href="components/angular-resource/bower.json" />
+<file href="components/angular-sanitize/README.md" />
+<file href="components/angular-sanitize/angular-sanitize.js" />
+<file href="components/angular-sanitize/angular-sanitize.min.js" />
+<file href="components/angular-sanitize/bower.json" />
+<file href="components/angular-scenario/README.md" />
+<file href="components/angular-scenario/angular-scenario.js" />
+<file href="components/angular-scenario/bower.json" />
+<file href="components/angular-scenario/jstd-scenario-adapter-config.js" />
+<file href="components/angular-scenario/jstd-scenario-adapter.js" />
+<file href="components/angular/angular.js" />
+<file href="components/angular/angular.min.js" />
+<file href="components/angular/component.json" />
+<file href="components/es5-shim/.gitignore" />
+<file href="components/es5-shim/CONTRIBUTORS.md" />
+<file href="components/es5-shim/README.md" />
+<file href="components/es5-shim/bower.json" />
+<file href="components/es5-shim/es5-sham.js" />
+<file href="components/es5-shim/es5-sham.map" />
+<file href="components/es5-shim/es5-sham.min.js" />
+<file href="components/es5-shim/es5-shim.js" />
+<file href="components/es5-shim/es5-shim.map" />
+<file href="components/es5-shim/es5-shim.min.js" />
+<file href="components/es5-shim/package.json" />
+<file href="components/es5-shim/tests/helpers/h-kill.js" />
+<file href="components/es5-shim/tests/helpers/h-matchers.js" />
+<file href="components/es5-shim/tests/helpers/h.js" />
+<file href="components/es5-shim/tests/index.html" />
+<file href="components/es5-shim/tests/index.min.html" />
+<file href="components/es5-shim/tests/lib/jasmine-html.js" />
+<file href="components/es5-shim/tests/lib/jasmine.css" />
+<file href="components/es5-shim/tests/lib/jasmine.js" />
+<file href="components/es5-shim/tests/lib/jasmine_favicon.png" />
+<file href="components/es5-shim/tests/lib/json2.js" />
+<file href="components/es5-shim/tests/spec/s-array.js" />
+<file href="components/es5-shim/tests/spec/s-date.js" />
+<file href="components/es5-shim/tests/spec/s-function.js" />
+<file href="components/es5-shim/tests/spec/s-number.js" />
+<file href="components/es5-shim/tests/spec/s-object.js" />
+<file href="components/es5-shim/tests/spec/s-string.js" />
+<file href="components/json3/.gitmodules" />
+<file href="components/json3/.npmignore" />
+<file href="components/json3/README.md" />
+<file href="components/json3/bower.json" />
+<file href="components/json3/build.js" />
+<file href="components/json3/index.html" />
+<file href="components/json3/jsl.conf" />
+<file href="components/json3/lib/json3.js" />
+<file href="components/json3/lib/json3.min.js" />
+<file href="components/json3/package.json" />
+<file href="components/json3/page/background.png" />
+<file href="components/json3/page/logo.png" />
+<file href="components/json3/page/page.html" />
+<file href="components/json3/page/style.css" />
+<file href="components/json3/test/test_browser.html" />
+<file href="components/json3/test/test_json3.js" />
+<file href="components/json3/vendor/closure-compiler.jar" />
+<file href="components/json3/vendor/curl.js" />
+<file href="components/json3/vendor/prototype.js" />
+<file href="components/json3/vendor/require.js" />
+<file href="content/courseOutline.json" />
+<file href="content/course_intro.html" />
+<file href="content/course_styles/main.scss" />
+<file href="content/images/Main-Logo.png" />
+<file href="content/images/New-Logo-Mark.png" />
+<file href="content/images/New-Logo-Mark_small.png" />
+<file href="content/intro_screen01.html" />
+<file href="content/intro_screen02.html" />
+<file href="content/intro_screen03.html" />
+<file href="content/intro_screen04.html" />
+<file href="content/intro_screen05.html" />
+<file href="content/intro_screen06.html" />
+<file href="content/module01_intro.html" />
+<file href="content/module01_intro_screen01.html" />
+<file href="content/module01_intro_screen02.html" />
+<file href="content/module01_intro_screen03.html" />
+<file href="content/module01_lesson01_intro.html" />
+<file href="content/module01_screen02.html" />
+<file href="content/module01_screen03.html" />
+<file href="content/module01_screen04.html" />
+<file href="content/module01_screen05.html" />
+<file href="content/module01_screen06.html" />
+<file href="content/module01_screen07.html" />
+<file href="content/module01_screen08.html" />
+<file href="content/module01_screen09.html" />
+<file href="content/module01_screen10.html" />
+<file href="content/module01_screen12.html" />
+<file href="content/module02_intro.html" />
+<file href="content/module02_screen02.html" />
+<file href="content/module02_screen03.html" />
+<file href="content/module02_screen04.html" />
+<file href="content/module02_screen05.html" />
+<file href="content/module02_screen06.html" />
+<file href="content/module02_screen07.html" />
+<file href="content/module02_screen08.html" />
+<file href="content/module02_screen09.html" />
+<file href="content/module02_screen10.html" />
+<file href="content/module02_screen11.html" />
+<file href="content/module02_screen12.html" />
+<file href="content/module03_intro.html" />
+<file href="content/module03_screen02.html" />
+<file href="content/module03_screen03.html" />
+<file href="content/module03_screen04.html" />
+<file href="content/module03_screen05.html" />
+<file href="content/module03_screen06.html" />
+<file href="content/module03_screen07.html" />
+<file href="content/module03_screen08.html" />
+<file href="content/module03_screen09.html" />
+<file href="content/module03_screen10.html" />
+<file href="content/module03_screen11.html" />
+<file href="content/module03_screen12.html" />
+<file href="content/module03_screen13.html" />
+<file href="content/module03_screen14.html" />
+<file href="content/module03_screen16.html" />
+<file href="content/module04_intro.html" />
+<file href="content/module04_screen02.html" />
+<file href="content/module04_screen03.html" />
+<file href="content/module04_screen04.html" />
+<file href="content/module04_screen05.html" />
+<file href="content/module04_screen07.html" />
+<file href="content/module05_intro.html" />
+<file href="content/module05_screen02.html" />
+<file href="content/module05_screen03.html" />
+<file href="content/module05_screen05.html" />
+<file href="content/module06_intro.html" />
+<file href="index.html" />
+<file href="scripts/SCORM_12.js" />
+<file href="scripts/app.js" />
+<file href="styles/_base.scss" />
+<file href="styles/_compass_twitter_bootstrap.scss" />
+<file href="styles/_compass_twitter_bootstrap_awesome.scss" />
+<file href="styles/_compass_twitter_bootstrap_responsive.scss" />
+<file href="styles/compass_twitter_bootstrap/_accordion.scss" />
+<file href="styles/compass_twitter_bootstrap/_alerts.scss" />
+<file href="styles/compass_twitter_bootstrap/_breadcrumbs.scss" />
+<file href="styles/compass_twitter_bootstrap/_button-groups.scss" />
+<file href="styles/compass_twitter_bootstrap/_buttons.scss" />
+<file href="styles/compass_twitter_bootstrap/_carousel.scss" />
+<file href="styles/compass_twitter_bootstrap/_close.scss" />
+<file href="styles/compass_twitter_bootstrap/_code.scss" />
+<file href="styles/compass_twitter_bootstrap/_component-animations.scss" />
+<file href="styles/compass_twitter_bootstrap/_dropdowns.scss" />
+<file href="styles/compass_twitter_bootstrap/_font-awesome.scss" />
+<file href="styles/compass_twitter_bootstrap/_forms.scss" />
+<file href="styles/compass_twitter_bootstrap/_grid.scss" />
+<file href="styles/compass_twitter_bootstrap/_hero-unit.scss" />
+<file href="styles/compass_twitter_bootstrap/_labels-badges.scss" />
+<file href="styles/compass_twitter_bootstrap/_layouts.scss" />
+<file href="styles/compass_twitter_bootstrap/_media.scss" />
+<file href="styles/compass_twitter_bootstrap/_mixins.scss" />
+<file href="styles/compass_twitter_bootstrap/_modals.scss" />
+<file href="styles/compass_twitter_bootstrap/_navbar.scss" />
+<file href="styles/compass_twitter_bootstrap/_navs.scss" />
+<file href="styles/compass_twitter_bootstrap/_pager.scss" />
+<file href="styles/compass_twitter_bootstrap/_pagination.scss" />
+<file href="styles/compass_twitter_bootstrap/_popovers.scss" />
+<file href="styles/compass_twitter_bootstrap/_progress-bars.scss" />
+<file href="styles/compass_twitter_bootstrap/_reset.scss" />
+<file href="styles/compass_twitter_bootstrap/_responsive-1200px-min.scss" />
+<file href="styles/compass_twitter_bootstrap/_responsive-767px-max.scss" />
+<file href="styles/compass_twitter_bootstrap/_responsive-768px-979px.scss" />
+<file href="styles/compass_twitter_bootstrap/_responsive-navbar.scss" />
+<file href="styles/compass_twitter_bootstrap/_responsive-utilities.scss" />
+<file href="styles/compass_twitter_bootstrap/_responsive.scss" />
+<file href="styles/compass_twitter_bootstrap/_scaffolding.scss" />
+<file href="styles/compass_twitter_bootstrap/_sprites.scss" />
+<file href="styles/compass_twitter_bootstrap/_tables.scss" />
+<file href="styles/compass_twitter_bootstrap/_thumbnails.scss" />
+<file href="styles/compass_twitter_bootstrap/_tooltip.scss" />
+<file href="styles/compass_twitter_bootstrap/_type.scss" />
+<file href="styles/compass_twitter_bootstrap/_utilities.scss" />
+<file href="styles/compass_twitter_bootstrap/_variables.scss" />
+<file href="styles/compass_twitter_bootstrap/_wells.scss" />
+<file href="styles/main.css" />
+<file href="styles/main.scss" />
+<file href="views/content.html" />
+<file href="views/courseTitle.html" />
+<file href="views/linearNav.html" />
+<file href="views/main.html" />
+<file href="views/menu.html" />
+<file href="views/menuTree.html" />
+</resource>
+
+</resources>
+
+</manifest>

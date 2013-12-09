@@ -1,0 +1,3 @@
+<p>CONTENT: {{screenId}}</p>
+<div ng-include src="'../_CONTENT/'+screenId+'.html'"/></div>
+

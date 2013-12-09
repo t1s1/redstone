@@ -1,0 +1,2 @@
+<div class="content" ng-include src="'./content/'+screenId+'.html'"/></div>
+

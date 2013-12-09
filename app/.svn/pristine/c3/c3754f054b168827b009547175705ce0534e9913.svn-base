@@ -1,0 +1,10 @@
+<div style="text-indent: {{thisNode.indent}}em">
+  <a ng-href="#/{{thisNode.id}}">{{ thisNode.title}}</a>
+</div>
+<div class="menu-item" ng-repeat="child in thisNode.content">
+  <cww-recursive><span cww-tree="child"></span>
+</cww-recursive></div>
+<div class="menu-item" style="text-indent: {{thisNode.indent}}em">
+  <a ng-show="thisNode.assessments" ng-href="#/content/{{thisNode.assessments}}">Assessments</a>
+</div>
+

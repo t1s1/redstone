@@ -1,0 +1,16 @@
+<!-- This loads each menu item (node) into the menu. Set thisNode.indent < # to limit recursion -->
+<div class="menu-item" style="text-indent: {{thisNode.level}}em" ng-show="thisNode.level < thisNode.maxDepth">
+  <a ng-class="{'selected': thisNode.selected}" ng-href="#/{{thisNode.id}}" ng-click="setSelection(thisNode)">{{thisNode.title}}</a>
+</div>
+<!-- This part makes the tree - it's the "branches" -->
+<div ng-repeat="child in thisNode.content">
+  <cww-recursive>
+    <span cww-tree="child"></span>
+  </cww-recursive>
+</div>
+<!--
+<div class="menu-item" style="text-indent: {{thisNode.indent}}em">
+  <a ng-class="{'selected': thisNode.selected}" ng-show="thisNode.assessments" ng-href="#/content/{{thisNode.assessments}}" ng-click="setSelection(thisNode)">Assessments</a>
+</div>
+-->
+

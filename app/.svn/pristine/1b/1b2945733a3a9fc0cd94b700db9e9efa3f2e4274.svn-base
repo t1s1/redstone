@@ -1,0 +1,104 @@
+'use strict';
+
+var app = angular.module('cwwRedstone', ['cwwRedstone.directives', 'cwwRedstone.services']);
+
+// DIRECTIVES
+var directives = angular.module('cwwRedstone.directives', []);
+
+directives.directive('cwwMenu',
+  function() {
+    return {
+      controller: ['$scope', 'CourseOutlineLoader', function($scope, CourseOutlineLoader) {
+        var level = 0;
+        var levelArrayKey = "content";
+        function iterateOutline(outlineLevel) {
+          for (var i = 0; i <= outlineLevel.length - 1; i++) {
+            if(outlineLevel[i][levelArrayKey] != undefined) {
+              level++;
+              iterateOutline(outlineLevel[i][levelArrayKey]);
+            }
+            // add indent property to object in case menu wants it
+            outlineLevel[i].indent = level;
+            console.log(outlineLevel[i]);
+          };
+          level--;
+        }
+
+        CourseOutlineLoader().then(function(outline) {
+          iterateOutline(outline[levelArrayKey]);
+          $scope.CourseOutline = outline;
+        });
+      }],
+      templateUrl:'./views/menu.html',
+      link: function(scope, element, attrs) {
+        //element.addClass('ok');
+      }
+    };
+  });
+
+directives.directive('cwwContent',
+  function() {
+    return {
+      controller: ['$scope', '$location', function($scope, $location) {
+        $scope.$watch(function pathWatch() {
+          return $location.path(); 
+        }, 
+        function pathWatchAction(path) {
+          $scope.screenId = path;
+        });
+      }],
+      templateUrl:'./views/content.html',
+      link: function(scope, element, attrs) {
+        //element.addClass('ok');
+      }
+    };
+  });
+
+directives.directive("cwwRecursive", function($compile) {
+  return {
+    restrict: "EACM",
+    priority: 100000,
+    compile: function(tElement, tAttr) {
+      var contents = tElement.contents().remove();
+      var compiledContents;
+      return function(scope, iElement, iAttr) {
+        if(!compiledContents) {
+            compiledContents = $compile(contents);
+        }
+        iElement.append(
+          compiledContents(scope, function(clone) { return clone; }));
+      };
+    }
+  };
+});
+
+directives.directive("cwwTree", function() {
+  return {
+    scope: {"thisNode": '=cwwTree'}, // set up bi-directional binding between local scope property and parent scope property of this key for model
+    templateUrl: './views/menuTree.html',
+    compile: function() { return  function() { } }
+  };
+});
+
+
+
+// SERVICES
+var services = angular.module('cwwRedstone.services', ['ngResource']);
+
+services.factory('CourseOutlineJSON', ['$resource',
+  function($resource) {
+    return $resource('../_CONTENT/courseOutline.json');
+  }]);
+
+services.factory('CourseOutlineLoader', ['CourseOutlineJSON', '$q',
+  function(CourseOutlineJSON, $q) {
+    return function() {
+      var delay = $q.defer();
+      CourseOutlineJSON.get(function(CourseOutlineJSON) {
+        delay.resolve(CourseOutlineJSON);
+      }, function() {
+        delay.reject('Unable to fetch course outline');
+      });
+      return delay.promise;
+    };
+  }]);

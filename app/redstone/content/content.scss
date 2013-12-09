@@ -1,0 +1,50 @@
+@import "base";
+
+.content {
+  position: absolute;
+  top: $titleHeight;
+  left: $menuWidth;
+  width: $totalWidth - $menuWidth;
+  height: $contentHeight;
+  z-index:  4;
+
+  padding: $contentPadding;
+
+  border: {
+    style: solid;
+    width: 1px;
+    color: lighten($castleGray, 10%);
+  }
+
+  font-size: 16px; 
+
+  h1, h2 {
+    font-size: 1.4em;
+    color: $castleRed;
+  }
+}
+
+.content-animate.ng-enter,
+.content-animate.ng-leave { 
+  -webkit-transition: 300ms linear all;
+  -moz-transition: 300ms linear all;
+  -ms-transition: 300ms linear all;
+  -o-transition: 300ms linear all;
+  transition: 300ms linear all;
+} 
+
+.content-animate.ng-enter {
+  opacity: 0;
+}
+
+.content-animate.ng-enter-active {
+  opacity: 1;
+}
+
+.content-animate.ng-leave {
+  opacity: 1;
+}
+
+.content-animate.ng-leave-active {
+  opacity: 0;
+}

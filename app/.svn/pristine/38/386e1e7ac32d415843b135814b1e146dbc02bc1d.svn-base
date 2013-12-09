@@ -1,0 +1,4 @@
+<span ng-switch on="screenId">
+<div class="content" ng-switch-when="null"></div><!-- shows nothing when screenId = '' -->
+<div class="content" ng-switch-default ng-include src="'./content/'+screenId+'.html'"/></div>
+</span>

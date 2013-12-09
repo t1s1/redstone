@@ -1,0 +1,16 @@
+{
+  "name": "angular-touch",
+  "version": "1.2.0-rc.2",
+  "main": "./angular-touch.js",
+  "dependencies": {
+    "angular": "1.2.0-rc.2"
+  },
+  "gitHead": "f11ca92e6c6c564e7975ef048f29ee052e1502c9",
+  "_id": "angular-touch@1.2.0-rc.2",
+  "readme": "ERROR: No README.md file found!",
+  "description": "ERROR: No README.md file found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/angular/bower-angular-touch.git"
+  }
+}

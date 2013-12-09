@@ -1,0 +1,21 @@
+'use strict';
+
+var services = angular.module('cwwRedstone.services', ['ngResource']);
+
+services.factory('CourseOutlineJSON', ['$resource',
+  function($resource) {
+    return $resource('../_CONTENT/courseOutline.json');
+  }]);
+
+services.factory('CourseOutlineLoader', ['CourseOutlineJSON', '$q',
+  function(CourseOutlineJSON, $q) {
+    return function() {
+      var delay = $q.defer();
+      CourseOutlineJSON.get(function(CourseOutlineJSON) {
+        delay.resolve(CourseOutlineJSON);
+      }, function() {
+        delay.reject('Unable to fetch course outline');
+      });
+      return delay.promise;
+    };
+  }]);

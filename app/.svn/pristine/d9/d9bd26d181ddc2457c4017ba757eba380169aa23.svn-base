@@ -1,0 +1,4 @@
+<!-- Content area, loaded dynamically from content folder (see content directive) -->
+<span >
+  <div class="content content-animate" ng-include src="screenFile"/></div>
+</span>

@@ -1,0 +1,20 @@
+/*
+ * Menu
+ * Navigation menu for course
+ */
+define(['./module', '../services/stateManager'], function (directives) {
+  'use strict';
+
+  directives.directive('cwwMenu', function() {
+    return {
+      controller: ['$scope', 'StateManager', function($scope, StateManager) {
+        // call StateManager service to get outline (which loads and serves it)
+        StateManager.init().then(function(outline) {
+          // assign outline to menu
+          $scope.CourseOutline = outline;
+        });
+      }],
+      templateUrl:'./views/menu.html'
+    };
+  });
+});

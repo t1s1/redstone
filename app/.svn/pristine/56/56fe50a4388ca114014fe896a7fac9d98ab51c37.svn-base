@@ -1,0 +1,18 @@
+/*
+ * Title
+ * Displays course title
+ */
+   define(['./module', '../services/courseOutline'], function (directives) {
+  'use strict';
+
+  directives.directive('cwwTitle', ['templateDir', function(templateDir) {
+    return {
+      controller: ['$scope', 'CourseOutline', function($scope, CourseOutline) {
+        CourseOutline.getOutline().then(function(outline) {
+          $scope.title = outline.title;
+        });
+      }],
+      templateUrl:  './'+templateDir+'/courseTitle.html'
+    };
+  }]);
+});

@@ -1,0 +1,178 @@
+@import "base";
+
+$baseColor: $castleGray;
+$highlight: $castleRed;
+$linkColor: $white;
+
+$totalWidth: 960px;
+$menuWidth: 220px;
+$titleHeight: 40px;
+$contentHeight: 600px;
+$contentPadding: 20px;
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.container {
+  position: relative;
+  margin: 60px auto;
+  width: 960px;
+  height: 680px;
+}
+
+.content {
+  position: absolute;
+  top: $titleHeight;
+  left: $menuWidth;
+  width: $totalWidth - $menuWidth;
+  height: $contentHeight;
+  z-index:  4;
+
+  padding: $contentPadding;
+
+  border: {
+    style: solid;
+    width: 1px;
+    color: lighten($castleGray, 10%);
+  }
+
+  font-size: 16px; 
+
+  h1, h2 {
+    font-size: 1.4em;
+    color: $castleRed;
+  }
+}
+
+.content-animate.ng-enter,
+.content-animate.ng-leave { 
+  -webkit-transition: 300ms linear all;
+  -moz-transition: 300ms linear all;
+  -ms-transition: 300ms linear all;
+  -o-transition: 300ms linear all;
+  transition: 300ms linear all;
+} 
+
+.content-animate.ng-enter {
+  opacity: 0;
+}
+
+.content-animate.ng-enter-active {
+  opacity: 1;
+}
+
+.content-animate.ng-leave {
+  opacity: 1;
+}
+
+.content-animate.ng-leave-active {
+  opacity: 0;
+}
+
+.course-title {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: $menuWidth;
+  height: 0;
+  z-index:  3;
+
+  padding: 0;
+  text-align: left;
+  color: darken($castleGray, 30%);
+  font-size: 2.2em;
+}
+
+.course-menu { 
+  position: absolute;
+  top: $titleHeight;
+  left: 0;
+  width: $menuWidth;
+  z-index:  2;
+
+  .menu-item {
+    display: block;
+    border: {
+      style: solid;
+      width: 0 0 1px;
+      color: lighten($baseColor, 10%);
+    }
+    /* each item in menu */
+    a {
+      color: $linkColor;
+      text-decoration: none;
+      display: block;
+      margin: 0;
+      padding: 6px 12px;
+      
+      background: darken($baseColor, 30%);
+
+      border: {
+        style: solid;
+        width: 0 10px 0 0;
+        color: lighten($baseColor, 6%);
+      }
+
+      &.selected {
+        color: darken($linkColor, 10%);
+        background: darken($baseColor, 35%);
+        border-color: $highlight;
+      }
+      &:hover, &.selected:hover {
+        background: darken($baseColor, 20%);
+        border-color: scale-color($highlight, $saturation: 100%, $lightness: 20%);
+      }
+    }
+  }
+}
+
+.linear-nav {
+  position: absolute;
+  top: $contentHeight + $titleHeight + ($contentPadding * 2);
+  left: $menuWidth;
+  width: $totalWidth - $menuWidth + ($contentPadding * 2);
+  height: 36px;
+  z-index:  1;
+
+  $buttonPadding: 2px;
+
+  border: {
+    style: solid;
+    width: 1px;
+    color: lighten($baseColor, 10%);
+  }
+
+  background: lighten($baseColor, 10%);
+  color: darken($castleGray, 30%);
+  font-size: 2.2em;
+
+  button {
+    display: block;
+    position: absolute;
+    top: $buttonPadding;
+    width: 80px;
+    height: 32px;
+
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+
+    border: none;
+    background: rgba($linkColor, 0.5);
+    color: darken($castleGray, 30%);
+
+    &#back {
+      left: $buttonPadding;
+    }
+
+    &#next {
+      right: $buttonPadding;
+      color: $highlight;
+    }
+
+    &:disabled, &#next:disabled {
+      color: $baseColor;
+    }
+  }
+}

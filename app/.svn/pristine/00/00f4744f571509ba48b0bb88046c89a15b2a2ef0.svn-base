@@ -1,0 +1,3 @@
+<!-- Shows screen title -->
+<div class="screen-title">{{screenTitle}}</div>
+

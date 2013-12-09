@@ -1,0 +1,15 @@
+@import "base";
+
+.course-title {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: $menuWidth;
+  height: 0;
+  z-index:  3;
+
+  padding: 0;
+  text-align: left;
+  color: darken($castleGray, 30%);
+  font-size: 2.2em;
+}

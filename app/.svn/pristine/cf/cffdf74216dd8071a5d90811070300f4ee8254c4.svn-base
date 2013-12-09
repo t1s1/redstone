@@ -1,0 +1,8 @@
+/*
+ * Defines Angular Directives for use by modules in this directory
+ * Should not need to be edited
+ */
+define(['angular'], function (ng) {
+  'use strict';
+  return ng.module('redstoneApp.directives', []).constant('templateDir', 'templates');
+});

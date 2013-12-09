@@ -1,0 +1,28 @@
+<style type="text/css">
+h1,h2,h3,h4,h5,h6 {
+	font-family: Calibri;
+	font-weight: bold;
+}
+h1 {
+	font-size: xx-large;
+	color: rgb(177,24,30);
+}
+body,td,th {
+	font-family: Calibri;
+	font-size: x-large;
+}
+</style>
+<div>
+<h1 align="center">&nbsp; </h1>
+<h1 align="center">&nbsp;</h1>
+<h1 align="center">Introduction </h1>
+<p align="center">&nbsp;</p>
+<ul>
+  <li>After completing the following training and passing the accompanying exam, participants will be Castle Certified Proctors.</li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+  <li> This training is paired with a Proctor Manual. If at any point participants need clarification, they may refer to the manual for further details</ul>
+<p>&nbsp;</p>
+<p><img src="Images/New-Logo-Mark_small.png" width="80" height="99" align="right"></p>
+</div>

@@ -1,0 +1,73 @@
+@import "compass_twitter_bootstrap";
+@import "base";
+
+// TEMPORARY?
+.container {
+  margin-top: 100px;
+  height: 680px;
+  border: {
+    style: solid;
+    width: 1px;
+    color: lighten($castleGray, 10%);
+  }
+}
+
+.content {
+  font-size: 16px; 
+  h1, h2 {
+    font-size: 1.4em;
+    color: $castleRed;
+  }
+}
+
+.course-title {
+  display: block;
+  margin: -35px 0 0 0;
+  padding: 0;
+  text-align: center;
+  color: darken($castleGray, 30%);
+  font-size: 2.5em;
+  height: 0;
+}
+
+.course-menu {
+  $baseColor: $castleGray;
+  $highlight: $castleRed;
+  $linkColor: $white;
+
+  .menu-item {
+    display: block;
+    border: {
+      style: solid;
+      width: 0 0 1px;
+      color: lighten($baseColor, 10%);
+    }
+    /* each item in menu */
+    a {
+      color: $linkColor;
+
+      display: block;
+      margin: 0;
+      padding: 6px 12px;
+      
+      background: darken($baseColor, 30%);
+
+      border: {
+        style: solid;
+        width: 0 10px 0 0;
+        color: lighten($baseColor, 6%);
+      }
+
+      &.selected {
+        color: darken($linkColor, 10%);
+        background: darken($baseColor, 35%);
+        border-color: $highlight;
+      }
+      &:hover, &.selected:hover {
+        text-decoration: none;
+        background: darken($baseColor, 20%);
+        border-color: scale-color($highlight, $saturation: 100%, $lightness: 20%);
+      }
+    }
+  }
+}

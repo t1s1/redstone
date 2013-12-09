@@ -1,0 +1,358 @@
+'use strict';
+
+// APPLICATION
+var app = angular.module('cwwRedstone', ['cwwRedstone.directives', 'cwwRedstone.services']);
+
+// SERVICES
+var services = angular.module('cwwRedstone.services', ['ngResource']);
+
+/*
+ * CourseOutlineJSON
+ * Returns reference to course outline resource, in JSON format
+ */
+services.factory('CourseOutlineJSON', ['$resource', function($resource) {;
+  return $resource('./content/courseOutline.json');
+}]);
+
+/*
+ * CourseOutlineLoader
+ * Loads course outline asynchronously
+ */
+services.factory('CourseOutlineLoader', ['CourseOutlineJSON', '$q', function(CourseOutlineJSON, $q) {
+  return function() {
+    var delay = $q.defer();
+    CourseOutlineJSON.get(function(CourseOutlineJSON) {
+      delay.resolve(CourseOutlineJSON);
+    }, function() {
+      delay.reject('Unable to fetch course outline');
+    });
+    return delay.promise;
+  };
+}]);
+
+/*
+ * CourseOutline
+ * Gets course outline, stores and manipulates result
+ */
+services.factory('CourseOutline', ['CourseOutlineLoader', '$q', '$location', function(CourseOutlineLoader, $q, $location) {
+  var courseOutline;
+  // stores visibly selected menu item
+  var selectedNode;
+  // stores current node (could be sub of selected)
+  var currentNode;
+  // set this to determine the deepest level to be shown
+  var maxDepth = 1;
+
+  function iterateOutline(outlineContentLevel, levelNum) {
+    var content = outlineContentLevel.content;
+
+    for (var i = 0; i <= content.length - 1; i++) {
+      if(content[i].content != undefined) {
+        iterateOutline(content[i], levelNum+1);
+      }
+      // store level of this node
+      content[i].level = levelNum;
+      // local reference
+      content[i].maxDepth = maxDepth;
+      // "selected" shows which is currently active
+      content[i].selected = false;
+      // store reference to parent
+      content[i].parent = outlineContentLevel;
+      // store index for linear navigation
+      content[i].index = i;
+    };
+    levelNum--;
+  }
+
+  // highlight selected item and set current
+  function setSelection(newNode) {
+    // recursively check parents until we find one that can show selection
+    function setSelectedOnParent(thisNode) {
+      if (thisNode.level < thisNode.maxDepth) {
+        selectedNode = thisNode;
+      }
+      else if (thisNode.parent) {
+        setSelectedOnParent(thisNode.parent);
+      }
+    }
+
+    // if this node is not currently selected
+    if(currentNode != newNode) {
+      currentNode = newNode;
+      // clear old selection flag
+      if(selectedNode) {
+        selectedNode.selected = false;
+      }
+
+      // if this is a level that can show
+      if(currentNode.level < currentNode.maxDepth) {
+        selectedNode = currentNode;
+      }
+      else {
+        setSelectedOnParent(currentNode);
+      }
+    }
+    // set flag
+    selectedNode.selected = true;
+    // set page location
+    $location.path('/'+currentNode.id);
+  }
+
+  return {
+    getOutline: function() {
+      return CourseOutlineLoader().then(function(outline) {
+        iterateOutline(outline, 0);
+        courseOutline = outline;
+        // TODO: replace with state management
+        setSelection(courseOutline.content[0]);
+        return courseOutline;
+      });
+    },
+    setCurrent: function(node) {
+      setSelection(node);
+    },
+    getCurrent: function() {
+      return currentNode;
+    }
+  };
+}]);
+
+services.factory('InitialState', ['CourseOutline', function(CourseOutline) {
+  var courseOutline;
+  // we need to make sure the course outline is loaded AND arranged
+  CourseOutline.getOutline().then(function(outline) {
+    courseOutline = outline;
+    console.log(courseOutline.title);
+  });
+
+  
+
+  return {
+    initialNode: node
+  };
+}]);
+
+// DIRECTIVES
+var directives = angular.module('cwwRedstone.directives', []);
+
+/*
+ * cwwContent
+ * Handles loading of course content
+ */
+directives.directive('cwwContent', function() {
+  return {
+    controller: ['$scope', '$location', function($scope, $location) {
+      // watch when value of location changes and change content to match
+      $scope.$watch(function pathWatch() {
+        return $location.path(); 
+      }, 
+      function pathWatchAction(path) {
+        $scope.screenId = path;
+      });
+    }],
+    templateUrl:'./views/content.html',
+    link: function(scope, element, attrs) {
+      //
+    }
+  };
+});
+
+/*
+ * cwwLinearNav
+ * Handles Back/Next navigation
+ */
+directives.directive('cwwLinearNav', function() {
+  return {
+    controller: ['$scope', '$location', 'CourseOutline', function($scope, $location, CourseOutline) {
+      var c = CourseOutline;
+      var thisNode;
+
+      // looks for next node, recursively searching up the tree
+      function findNext(node, thisNode) {
+        if(node.parent == undefined) {
+          return thisNode;
+        }
+        // if there is a parent node, and we're the last node
+        if(node.parent.content[node.index +1] == undefined) {
+          thisNode = findNext(node.parent, thisNode);
+        }
+        else {
+          thisNode = node;
+        }
+        return thisNode;
+      };
+
+      // checks to see if this is the very last node in the course
+      function isLastCheck(node) {
+        var isLast;
+        if(node.parent == undefined) {
+          // if we've made it to the very top, we're done and there are no more nodes after this
+          isLast = true;
+        }
+        else {
+          // if there is a parent node, and we're the last node
+          if(node.parent.content[node.index +1] == undefined) {
+            // we must recurse up
+            isLast = isLastCheck(node.parent);
+          }
+          else {
+            // not the last node
+            isLast = false;
+          }
+        }
+        return isLast;
+      };
+
+      // searches for the the last node of the deepest branch (useful when moving back)
+      function findLastOfDeepest(node, thisNode) {
+        // if there is content...
+        if(node.content != undefined) {
+          // recurse into the last node
+          thisNode = findLastOfDeepest(node.content[node.content.length-1], thisNode);
+        }
+        else {
+          thisNode = node;
+        }
+        return thisNode;
+      }
+
+      $scope.NextDisabled = function() {
+        var disabled = false;
+
+        // initialize to where we are
+        thisNode = c.getCurrent();
+        // if we get something
+        if(thisNode != undefined) {
+          // if there is content, then Next should be enabled
+          if(thisNode.content != undefined) {
+            disabled = false;
+          }
+          else {
+            // if not, see if this is this the last one?
+            disabled = isLastCheck(thisNode);
+          }
+        }
+        return disabled;
+      };
+
+      $scope.BackDisabled = function() {
+        var disabled = false;
+
+        // initialize to where we are
+        thisNode = c.getCurrent();
+        // if we get something
+        if(thisNode != undefined) {
+          // if this is the first node
+          if(thisNode.index == 0) {
+            // and we're at the top level
+            if(thisNode.parent.id == undefined) {
+              disabled = true;
+            }
+          }
+        }
+
+        return disabled;
+      };
+
+      $scope.Next = function() {
+        // initialize to where we are
+        thisNode = c.getCurrent();
+
+        // if there are children to this node, we want to go to the first one of them
+        if(thisNode.content != undefined) {
+          c.setCurrent(thisNode.content[0]);
+        }
+        // we are the children
+        else {
+          // is this the last one? if so, check parents until we get a node that isn't
+          thisNode = findNext(thisNode, thisNode);
+          c.setCurrent(thisNode.parent.content[thisNode.index+1]);
+        }
+      };
+
+      $scope.Back = function() {
+        // initialize to where we are
+        thisNode = c.getCurrent();
+        // if this is first node
+        if(thisNode.index == 0) {
+          // we want the parent node (intro)
+          if(thisNode.parent != undefined) {
+            thisNode = thisNode.parent;
+          }
+          // uh-oh, we're at the top level, so drop to last child of previous branch
+          else {
+            thisNode = findLastOfDeepest(thisNode[thisNode.index-1], thisNode);
+          }
+        }
+        // not the first, just go back one
+        else {
+          thisNode = findLastOfDeepest(thisNode.parent.content[thisNode.index-1], thisNode);
+        }
+        c.setCurrent(thisNode);
+      };
+
+    }],
+    templateUrl:'./views/linearNav.html',
+    link: function(scope, element, attrs) {
+      //
+    }
+  };
+});
+
+/*
+ * cwwMenu
+ * Navigation menu for course
+ */
+directives.directive('cwwMenu', function() {
+  return {
+    controller: ['$scope', 'CourseOutline', function($scope, CourseOutline) {
+      
+      // we need to make sure the course outline is loaded and arranged
+      CourseOutline.getOutline().then(function(outline) {
+        $scope.CourseOutline = outline;
+      });
+    }],
+    templateUrl:'./views/menu.html',
+    link: function(scope, element, attrs) {
+      //
+    }
+  };
+});
+
+/*
+ * cwwRecursive
+ * Used in navigation menu tree
+ */
+directives.directive("cwwRecursive", function($compile) {
+  return {
+    restrict: "EACM",
+    priority: 100000,
+    compile: function(tElement, tAttr) {
+      var contents = tElement.contents().remove();
+      var compiledContents;
+      return function(scope, iElement, iAttr) {
+        if(!compiledContents) {
+          compiledContents = $compile(contents);
+        };
+        iElement.append(compiledContents(scope, function(clone) { return clone; }));
+      };
+    }
+  };
+});
+
+/*
+ * cwwTree
+ * Handles display of individual items in navigation menu
+ */
+directives.directive("cwwTree", function() {
+  return {
+    controller: ['$scope', 'CourseOutline', function($scope, CourseOutline) {
+      $scope.setSelection = CourseOutline.setCurrent;
+    }],
+    scope: {'thisNode': '=cwwTree'},
+    templateUrl: './views/menuTree.html'
+  };
+});
+
+
+

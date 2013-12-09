@@ -1,0 +1,2 @@
+cd redstone
+grunt build
